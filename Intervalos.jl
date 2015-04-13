@@ -5,7 +5,7 @@ import Base.log
 import Base.exp
 import Base.^
 
-export Interval, in, == , redonUP , redonDOWN, log , exp, ^, monotona
+export Interval, in, == , redonUP , redonDOWN, log , exp, ^,monotona
 #NO ME PREOCUPÉ POR DIVIDIR ENTRE CEROS
 
 
@@ -73,20 +73,55 @@ function +(v::Interval, w::Interval)
     Interval(redonDOWN(+,v.lo,w.lo),redonUP(+,v.hi,w.hi))
 end
 
+function +(v::Number, w::Interval)    
+    Interval(v)+w
+end
+
+function +(v::Interval, w::Number)    
+    v+Interval(w)
+end
+
 function -(v::Interval, w::Interval)    
     Interval(redonDOWN(-,v.lo,w.hi),redonUP(-,v.hi,w.lo))
+end
+
+function -(v::Number, w::Interval)    
+    Interval(v)-w
+end
+
+function -(v::Interval, w::Number)    
+    v-Interval(w)
 end
 
 function *(v::Interval, w::Interval) 
     Interval(min(redonDOWN(*,v.lo,w.lo),redonDOWN(*,v.lo,w.hi),redonDOWN(*,v.hi,w.lo),redonDOWN(*,v.hi,w.hi)),max(redonUP(*,v.lo,w.lo),redonUP(*,v.lo,w.hi),redonUP(*,v.hi,w.lo),redonUP(*,v.hi,w.hi)))    
 end
-    
+
+function *(v::Number, w::Interval) 
+    Interval(v)*w
+end
+
+function *(v::Interval, w::Number) 
+    v*Interval(w)
+end
+
 function /(v::Interval, w::Interval)
     if (0 in w)
         return error("El intervalo denominador contiene al cero")
     else
         return Interval(min(redonDOWN(/,v.lo,w.lo),redonDOWN(/,v.lo,w.hi),redonDOWN(/,v.hi,w.lo),redonDOWN(/,v.hi,w.hi)),max(redonUP(/,v.lo,w.lo),redonUP(/,v.lo,w.hi),redonUP(/,v.hi,w.lo),redonUP(/,v.hi,w.hi)))
     end
+end 
+
+
+
+
+function /(v::Number, w::Interval)
+    Interval(v)/w
+end 
+
+function /(v::Interval, w::Number)
+    v/Interval(w)
 end 
 
 
@@ -110,6 +145,7 @@ function exp(v::Interval)
     monotona(exp,v)
 end 
 
+
 function ^(v::Interval, w::Integer)
     
     if (v.hi > 0 && v.lo > 0)
@@ -118,6 +154,7 @@ function ^(v::Interval, w::Integer)
         return Interval(v.hi^w,v.lo^w)
         else        
         return Interval(0,max(v.lo^2,v.hi^2))
+    
     end
 end 
 
