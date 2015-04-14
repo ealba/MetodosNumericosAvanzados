@@ -81,6 +81,7 @@ function +(v::Interval, w::Number)
     v+Interval(w)
 end
 
+
 function -(v::Interval, w::Interval)    
     Interval(redonDOWN(-,v.lo,w.hi),redonUP(-,v.hi,w.lo))
 end
@@ -92,6 +93,7 @@ end
 function -(v::Interval, w::Number)    
     v-Interval(w)
 end
+
 
 function *(v::Interval, w::Interval) 
     Interval(min(redonDOWN(*,v.lo,w.lo),redonDOWN(*,v.lo,w.hi),redonDOWN(*,v.hi,w.lo),redonDOWN(*,v.hi,w.hi)),max(redonUP(*,v.lo,w.lo),redonUP(*,v.lo,w.hi),redonUP(*,v.hi,w.lo),redonUP(*,v.hi,w.hi)))    
@@ -105,6 +107,9 @@ function *(v::Interval, w::Number)
     v*Interval(w)
 end
 
+
+
+
 function /(v::Interval, w::Interval)
     if (0 in w)
         return error("El intervalo denominador contiene al cero")
@@ -113,9 +118,6 @@ function /(v::Interval, w::Interval)
     end
 end 
 
-
-
-
 function /(v::Number, w::Interval)
     Interval(v)/w
 end 
@@ -123,6 +125,7 @@ end
 function /(v::Interval, w::Number)
     v/Interval(w)
 end 
+
 
 
 function monotona(f::Function,v::Interval) #para cualquier función monótona, si es decreciente, se invierte el intervalo
@@ -164,9 +167,7 @@ function ^(v::Interval, q::Real) #Definido sólo para intervalos positivos
 end 
 
 
-
 #en sí, cualquier función monótona la defines como monotona(función, intervalo)
-
 
 
 function ==(a::Interval, b::Interval)
