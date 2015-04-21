@@ -7,8 +7,12 @@ import Base./
 import Base.exp
 import Base.log
 import Base.^
+import Base.sin
+import Base.cos
 
-export DV, +, -, * , / ,exp , log , ^
+
+
+export DV, +, -, * , / ,exp , log , ^ , sin , cos, 
 
 type DV
     f
@@ -61,6 +65,19 @@ end
             nuevod=(1/v.f)*v.d
             DV(nuevof,nuevod)
             end
+
+            function cos(v::DV) 
+            nuevof=cos(v.f);
+            nuevod=-sin(v.f)*v.d
+            DV(nuevof,nuevod)
+            end
+
+            function sin(v::DV) 
+            nuevof=sin(v.f);
+            nuevod=cos(v.f)*v.d
+            DV(nuevof,nuevod)
+            end
+
 
             function variableindep(v::DV)
             nuevof=v.f;
