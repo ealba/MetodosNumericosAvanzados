@@ -11,7 +11,7 @@ import Base.sin
 import Base.cos
 import Base.tan
 
-export Interval, in, == , redonUP , redonDOWN, log , exp, ^, monotona, ∩, ⊆, subset, Cestricto, radio, media, zeros, bisect,multisect, sin ,cos , tan
+export Interval, in, == , redonUP , redonDOWN, log , exp, ^, monotona, ∩, ⊆, subset, Cestricto, radio, media, zeros, bisect,trisect, multisect, sin ,cos , tan
 
 #------------------------------------------------------------------------------------DEFINICIÓN DE INTERVALO
 typealias prec BigFloat
@@ -32,6 +32,8 @@ end
 function Interval(f)  #Para definir los escalares  
     Interval(f,f)             
 end
+
+Interval() = println("Intervalo Vacío");
 
 #------------------------------------------------------------------------------------
 
@@ -78,7 +80,7 @@ end
 
 function ∩(A::Interval, B::Interval)
     if (A.hi < B.lo || B.hi < A.lo)
-    return Interval()
+     Interval()
         else
         return Interval(max(A.lo,B.lo),min(A.hi,B.hi))
     end
@@ -101,6 +103,24 @@ function bisect(x::Interval)
     return [Interval(x.lo,(x.hi+x.lo)/2),Interval((x.hi+x.lo)/2,x.hi)]
 end
 
+function trisect(x::Interval)
+    return [Interval(x.lo,x.lo+radio(x)/3),Interval(x.lo+radio(x)/3,x.lo+2*radio(x)/3),Interval(x.lo+2*radio(x)/3,x.hi)]
+end
+
+function zeros(T::Interval,dim::Integer)
+a=[];
+
+    for i in 1:dim
+    a=cat(1,a,Interval(0))
+end
+
+    b=a
+    for j in 1:dim-1
+    a=cat(2,a,b)
+end
+
+    return a
+end
 
 
 function multisect(x::Interval,ntot::Integer) 
