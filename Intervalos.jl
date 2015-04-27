@@ -11,7 +11,7 @@ import Base.sin
 import Base.cos
 import Base.tan
 
-export Interval, in, == , redonUP , redonDOWN, log , exp, ^, monotona, ∩, ⊆, subset, Cestricto, radio, media, zeros, bisect,trisect, multisect, sin ,cos , tan
+export Interval, in, == , redonUP , redonDOWN, log , exp, ^, monotona, ∩, ⊆, subset, Cestricto, radio, media, zeros, bisect,trisect, multisect, sin ,cos , tan , segment
 
 #------------------------------------------------------------------------------------DEFINICIÓN DE INTERVALO
 typealias prec BigFloat
@@ -33,7 +33,8 @@ function Interval(f)  #Para definir los escalares
     Interval(f,f)             
 end
 
-Interval() = println("Intervalo Vacío");
+Interval() = println("Intervalo vacío")
+
 
 #------------------------------------------------------------------------------------
 
@@ -80,7 +81,7 @@ end
 
 function ∩(A::Interval, B::Interval)
     if (A.hi < B.lo || B.hi < A.lo)
-     Interval()
+return("putamadre")
         else
         return Interval(max(A.lo,B.lo),min(A.hi,B.hi))
     end
@@ -157,6 +158,28 @@ function multisect(x::Interval,ntot::Integer)
 
         return A[:,ntot]
     end
+end
+
+
+function segment(A::Interval,n::Int)
+    Iseg=Interval[]
+    b = (A.hi-A.lo)/(n)
+    
+    for i in 1:n-1
+        set_rounding(BigFloat,RoundDown)
+        A1=A.lo + b*(i-1)
+        set_rounding(BigFloat,RoundUp)
+        A2=A.lo+b*i
+        set_rounding(BigFloat,RoundNearest)
+        push!(Iseg,Interval(A1,A2))
+    end
+            set_rounding(BigFloat,RoundDown)
+            A1=A.lo+b*(n-1)
+            set_rounding(BigFloat,RoundUp)
+            A2=A.hi
+            set_rounding(BigFloat,RoundNearest)
+            push!(Iseg,Interval(A1,A2))
+        return Iseg
 end
 
 
@@ -240,13 +263,49 @@ end
 
 
 
-function /(v::Interval, w::Interval)
-    if (0 in w)
-        return error("El intervalo denominador contiene al cero")
-    else
-        return Interval(min(redonDOWN(/,v.lo,w.lo),redonDOWN(/,v.lo,w.hi),redonDOWN(/,v.hi,w.lo),redonDOWN(/,v.hi,w.hi)),max(redonUP(/,v.lo,w.lo),redonUP(/,v.lo,w.hi),redonUP(/,v.hi,w.lo),redonUP(/,v.hi,w.hi)))
+
+
+
+
+
+function /(A::Interval, B::Interval)
+    if 0 in B == false
+        return A*Interval(redonDOWN(/,1,B.hi),redonUP(/,1,B.lo))
     end
-end 
+    
+    if (0 in A && 0 in B)
+        return Interval(-Inf, Inf)
+    end
+    
+    if (A.hi < 0 && B.lo < B.hi == 0)
+        return Interval(redonDOWN(/,A.hi,B.lo), Inf)
+    end
+    
+    if (A.hi < 0 && B.lo < 0 < B.hi)
+        return Interval(redonDOWN(/,A.hi,B.lo), redonUP(/,A.hi,B.hi))
+    end
+    
+    if (A.hi < 0 && 0 == B.lo < B.hi)
+        return Interval(-Inf, redonUP(/,A.hi,B.hi))
+    end
+    
+    if (0< A.lo && B.lo < B.hi==0)
+        return Interval(-Inf, redonUP(/,A.lo,B.lo))
+    end
+    
+    if (0 < A.lo && B.lo < 0 < B.hi)
+        return Interval(redonDOWN(/,A.lo,B.hi), redonUP(/,A.lo,B.lo))
+    end
+    
+    if (0 < A.lo && 0 == B.lo < B.hi)
+        return Interval(redonDOWN(/,A.lo,B.hi), Inf)
+    end
+    
+    if ( 0 in A == false && B == Interval(0,0))
+        return Interval()
+    end
+end
+
 
 function /(v::Number, w::Interval)
     Interval(v)/w
