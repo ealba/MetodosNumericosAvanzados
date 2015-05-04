@@ -11,7 +11,7 @@ import Base.sin
 import Base.cos
 import Base.tan
 
-export Interval, in, == , redonUP , redonDOWN, log , exp, ^, monotona, ∩, ⊆, subset, Cestricto, radio, media, zeros, bisect,trisect, multisect, sin ,cos , tan , segment
+export Interval, in, == , redonUP , redonDOWN, log , exp, ^, monotona, ∩, ⊆, subset, Cestricto, radio, media, zeros, bisect,trisect, multisect, sin ,cos , tan , segment , IntervalMD 
 
 #------------------------------------------------------------------------------------DEFINICIÓN DE INTERVALO
 typealias prec BigFloat
@@ -38,7 +38,12 @@ Interval() = println("Intervalo vacío")
 
 #------------------------------------------------------------------------------------
 
+#Para desplegar menos a la hora de sacar un intervalo
 
+function Base.show(io::IO, t::Interval)
+    repr="($(t.lo), $(t.hi))"
+    print(io,repr)
+end
 
 
 #------------------------------------------------------------------------------------OPERACIONES de conjuntos entre intervalos
@@ -181,6 +186,9 @@ function segment(A::Interval,n::Int)
             push!(Iseg,Interval(A1,A2))
         return Iseg
 end
+
+
+
 
 
 #-----------------------------------------------------------------------------------------------------------------
@@ -441,6 +449,48 @@ tan(A::Interval)=sin(A)/(cos(A))
 
 
 #----------------------------------------------------------En sí, cualquier función monótona la defines como monotona(función, intervalo)
+
+
+
+
+
+#----------------------------------------------------------
+#Cosas para Intervalos de varias dimensiones:
+
+typealias IntervalMD{} Vector{Interval}
+
+
+Base.promote_type{T<:Number}(::Type{T}, ::Type{Interval}) = Interval
+
+Base.convert(::Type{Interval}, x::Real) = Interval(x)
+Base.convert(::Type{Interval}, x::Interval) = x
+
+Base.convert(::Type{IntervalMD}, x::Real) = [Interval(x), Interval(x)]
+Base.convert(::Type{IntervalMD}, x::IntervalMD) = x
+
+
+
+Base.zero(::Type{Interval}) = Interval(0)
+promote_type(Int, Interval)
+
+Base.zeros(::Type{IntervalMD}) = [Interval(0), Interval(0)]
+promote_type(Int, Interval)
+
+
+Base.zero(x::Interval) = Interval(0)
+Base.zero(x::Any) = 0
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
